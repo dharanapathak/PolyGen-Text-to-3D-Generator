@@ -16,7 +16,7 @@ PolyGen aims to make this process more accessible by introducing a text-based wo
 
 - Develop a text-driven 3D asset generation workflow.
 - Explore Generative AI concepts and prompt engineering.
-- Convert natural-language descriptions into structured generation instructions.
+- Convert natural-language descriptions into structured generation instructions..
 - Generate and visualize basic 3D objects.
 - Provide a simple and user-friendly interface.
 - Support exporting generated assets for further use.
