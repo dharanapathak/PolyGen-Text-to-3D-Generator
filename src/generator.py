@@ -1,4 +1,4 @@
-"""
+""""
 PolyGen prompt processing module.
 
 Converts simple natural-language descriptions
