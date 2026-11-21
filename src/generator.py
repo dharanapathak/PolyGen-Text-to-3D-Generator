@@ -1,9 +1,4 @@
-""""
-PolyGen prompt processing module.
-
-Converts simple natural-language descriptions
-into structured 3D primitive specifications.
-"""
+"""PolyGen prompt processing and asset specification module."""
 
 import re
 
@@ -29,32 +24,44 @@ MATERIAL_KEYWORDS = {
     "stone": {"stone", "rock"},
 }
 
+COLOR_KEYWORDS = {
+    "red", "blue", "green", "black", "white",
+    "yellow", "orange", "purple", "brown",
+    "pink", "gray", "grey"
+}
+
+
+def tokenize_prompt(prompt):
+    """Convert a prompt into normalized words."""
+    return set(re.findall(r"[a-zA-Z0-9]+", prompt.lower()))
+
 
 def find_shape(words):
-    """Identify a supported primitive shape."""
+    """Identify the requested primitive shape."""
     for shape, keywords in SHAPE_KEYWORDS.items():
         if words.intersection(keywords):
             return shape
-
     return None
 
 
 def find_material(words):
-    """Identify a material mentioned in the prompt."""
+    """Identify the material mentioned in the prompt."""
     for material, keywords in MATERIAL_KEYWORDS.items():
         if words.intersection(keywords):
             return material
+    return "unspecified"
 
+
+def find_color(words):
+    """Identify a supported color in the prompt."""
+    matching_colors = words.intersection(COLOR_KEYWORDS)
+    if matching_colors:
+        return sorted(matching_colors)[0]
     return "unspecified"
 
 
 def generate_asset_spec(prompt):
-    """
-    Convert a text prompt into a structured 3D asset specification.
-
-    Supported shapes: cube, sphere, cylinder and cone.
-    This function prepares specifications, not actual 3D meshes.
-    """
+    """Convert text descriptions into structured 3D specifications."""
 
     if not isinstance(prompt, str):
         raise TypeError("Prompt must be a string.")
@@ -64,29 +71,26 @@ def generate_asset_spec(prompt):
     if not cleaned_prompt:
         raise ValueError("Prompt cannot be empty.")
 
-    words = set(
-        re.findall(r"[a-zA-Z0-9]+", cleaned_prompt.lower())
-    )
+    words = tokenize_prompt(cleaned_prompt)
 
     shape = find_shape(words)
     material = find_material(words)
+    color = find_color(words)
 
-    dimensions = None
+    dimensions = (
+        DEFAULT_DIMENSIONS[shape].copy()
+        if shape else None
+    )
 
-    if shape:
-        dimensions = DEFAULT_DIMENSIONS[shape].copy()
-
-    result = {
+    return {
         "prompt": cleaned_prompt,
         "shape": shape,
         "dimensions": dimensions,
         "material": material,
+        "color": color,
         "supported": shape is not None,
         "status": (
             "ready_for_geometry"
-            if shape
-            else "unsupported_shape"
+            if shape else "unsupported_shape"
         ),
     }
-
-    return result
