@@ -1,5 +1,5 @@
 
-"""Unit tests for the PolyGen prompt processing module."""
+"""Unit tests for the PolyGen prompt processing module.""""
 
 import unittest
 
@@ -74,4 +74,4 @@ class TestPolyGenGenerator(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main() 
