@@ -46,6 +46,32 @@ class TestPolyGenGenerator(unittest.TestCase):
         with self.assertRaises(TypeError):
             generate_asset_spec(123)
 
+    # Additional test cases
+
+    def test_color_detection(self):
+        result = generate_asset_spec("Create a red cube")
+        self.assertEqual(result["color"], "red")
+
+    def test_default_cube_dimensions(self):
+        result = generate_asset_spec("Create a cube")
+
+        expected_dimensions = {
+            "width": 1.0,
+            "height": 1.0,
+            "depth": 1.0
+        }
+
+        self.assertEqual(
+            result["dimensions"],
+            expected_dimensions
+        )
+
+    def test_whitespace_normalization(self):
+        result = generate_asset_spec("  Create   a   cube  ")
+
+        self.assertEqual(result["prompt"], "Create a cube")
+        self.assertEqual(result["shape"], "cube")
+
 
 if __name__ == "__main__":
     unittest.main()
