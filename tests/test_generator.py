@@ -1,5 +1,5 @@
 
-"""Unit tests for the PolyGen prompt processing module.""""
+"""Unit tests for the PolyGen prompt processing module."""
 
 import unittest
 
@@ -71,6 +71,20 @@ class TestPolyGenGenerator(unittest.TestCase):
 
         self.assertEqual(result["prompt"], "Create a cube")
         self.assertEqual(result["shape"], "cube")
+
+
+    def test_case_insensitive_shape_detection(self):
+        result = generate_asset_spec("CREATE A SPHERE")
+        self.assertEqual(result["shape"], "sphere")
+        self.assertTrue(result["supported"])
+
+    def test_unsupported_shape_status(self):
+        result = generate_asset_spec("Create a dragon")
+        self.assertEqual(result["status"], "unsupported_shape")
+
+    def test_whitespace_only_prompt(self):
+        with self.assertRaises(ValueError):
+            generate_asset_spec("     ")
 
 
 if __name__ == "__main__":
